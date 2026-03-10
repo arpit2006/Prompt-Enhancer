@@ -1,0 +1,21 @@
+HTTP/1.1 422 Unprocessable Entity
+Date: Sun, 08 Mar 2026 17:26:04 GMT
+Content-Type: application/json
+Content-Length: 158
+Connection: keep-alive
+CF-RAY: 9d938af4faa058e7-MAA
+mistral-correlation-id: 019cce7c-1589-7193-8302-bf8bdbc1fd5a
+x-kong-request-id: 019cce7c-1589-7193-8302-bf8bdbc1fd5a
+x-envoy-upstream-service-time: 3
+access-control-allow-origin: *
+x-kong-upstream-latency: 4
+x-kong-proxy-latency: 6
+cf-cache-status: DYNAMIC
+Set-Cookie: __cf_bm=AAq.dsvDcovGOzrNVCbTp10Nb8v.OVfSjwVQqob3.Wk-1772990764-1.0.1.1-9sWQVfWkWFZFNmf4xrSPUr8j2CecS5q_thhavcxI0LtQ8wKxEBjFyNHwjfCbQMX2S5ELFsgn21HqS2eMGnBu_B6vUakn3QQBKRQcPNGOu7A; path=/; expires=Sun, 08-Mar-26 17:56:04 GMT; domain=.mistral.ai; HttpOnly; Secure; SameSite=None
+Set-Cookie: _cfuvid=.0sKFc7e4.nggjKbGhC8xvPwMND7cIXeymGKCF2iWys-1772990764508-0.0.1.1-604800000; path=/; domain=.mistral.ai; HttpOnly; Secure; SameSite=None
+Strict-Transport-Security: max-age=15552000; includeSubDomains; preload
+X-Content-Type-Options: nosniff
+Server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+{"detail":[{"type":"json_invalid","loc":["body",1],"msg":"JSON decode error","input":{},"ctx":{"error":"Expecting property name enclosed in double quotes"}}]}

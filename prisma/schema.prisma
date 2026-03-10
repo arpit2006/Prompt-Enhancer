@@ -1,0 +1,53 @@
+// Prisma schema for AI Prompt Enhancer
+// Connected to Supabase (PostgreSQL)
+// 
+// Setup:
+//   1. Add DATABASE_URL and DIRECT_URL to .env.local
+//   2. Run: npx prisma db push
+//   3. Run: npx prisma generate
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// One record per user — stores all prompt history, folders, and analytics
+// as JSON blobs. Simple, schema-less, and works perfectly for a personal tool.
+model UserData {
+  id        String   @id @default(cuid())
+  userId    String   @unique    // user email from OAuth session
+  entries   Json     @default("[]")
+  folders   Json     @default("[]")
+  analytics Json     @default("[]")
+  updatedAt DateTime @updatedAt
+}
+
+// One row per enhancement — readable in Supabase Table Editor
+model PromptLog {
+  id             String   @id @default(cuid())
+  userId         String                       // user email
+  originalPrompt String
+  enhancedPrompt String
+  clarityScore   Int?
+  promptType     String?
+  tone           String?
+  aiMode         String
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Newsletter subscribers — one row per unique email
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  subscribedAt DateTime @default(now())
+  isActive     Boolean  @default(true)
+  source       String   @default("webapp")  // "webapp" | "profile" | etc.
+}

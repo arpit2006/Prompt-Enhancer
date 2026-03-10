@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 99%;
+    --foreground: 224 25% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 25% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 25% 10%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 20% 96%;
+    --secondary-foreground: 224 25% 20%;
+    --muted: 220 20% 96%;
+    --muted-foreground: 220 12% 52%;
+    --accent: 243 75% 96%;
+    --accent-foreground: 243 75% 40%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 18% 91%;
+    --input: 220 18% 91%;
+    --ring: 243 75% 59%;
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: 228 20% 8%;
+    --foreground: 220 20% 94%;
+    --card: 228 20% 10%;
+    --card-foreground: 220 20% 94%;
+    --popover: 228 20% 10%;
+    --popover-foreground: 220 20% 94%;
+    --primary: 243 75% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 228 20% 15%;
+    --secondary-foreground: 220 20% 85%;
+    --muted: 228 20% 15%;
+    --muted-foreground: 220 12% 55%;
+    --accent: 243 40% 20%;
+    --accent-foreground: 243 75% 75%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 228 18% 18%;
+    --input: 228 18% 18%;
+    --ring: 243 75% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Subtle dot-grid background for the editor area */
+.dot-grid {
+  background-image: radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.dark .dot-grid {
+  background-image: radial-gradient(circle, hsl(var(--border) / 0.6) 1px, transparent 1px);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/30;
+}
+
+/* Token count pulse animation */
+@keyframes token-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.token-pulse {
+  animation: token-pulse 1.4s ease-in-out infinite;
+}
+
+/* Gradient border for primary cards */
+.gradient-border {
+  position: relative;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, hsl(var(--primary)/0.4), hsl(var(--primary)/0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.token-pulse {
+  animation: token-pulse 1s ease-in-out infinite;
+}
+/* ── Custom half-ring spinner ── */
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid;
+  border-color: hsl(var(--foreground)) transparent;
+  animation: l1 1s infinite;
+}
+@keyframes l1 {
+  to { transform: rotate(.5turn); }
+}
