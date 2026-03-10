@@ -1,6 +1,20 @@
-# PromptCraft
+# 🚀 PromptCraft
 
-A Next.js 15 app that analyzes and rewrites your AI prompts for clarity, tone, and effectiveness — supporting Gemini, Groq, OpenAI, and Ollama. Includes prompt history, diff viewer, templates, folders, analytics, and OAuth login.
+<p align="center">
+  <img width="500" alt="PromptCraft Logo" src="https://github.com/user-attachments/assets/40a7b571-f94a-4bd6-84a3-b66611c09c59" />
+</p>
+
+<p align="center">
+<strong>Analyze • Improve • Optimize your AI prompts</strong>
+</p>
+
+<p align="center">
+A powerful AI prompt engineering tool that analyzes and rewrites prompts for clarity, tone, and effectiveness.
+</p>
+
+<p align="center">
+Supports <b>Gemini</b>, <b>Groq</b>, <b>OpenAI</b>, and <b>Ollama</b>.
+</p>
 
 ---
 
