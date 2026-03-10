@@ -1,6 +1,6 @@
 # PromptCraft
 
-A Next.js 15 web app that analyzes and rewrites your AI prompts for clarity, tone, and effectiveness — with multi-provider support, prompt history, cloud sync via Supabase, and more.
+A Next.js 15 app that analyzes and rewrites your AI prompts for clarity, tone, and effectiveness — supporting Gemini, Groq, OpenAI, and Ollama. Includes prompt history, diff viewer, templates, folders, analytics, and OAuth login.
 
 ---
 
