@@ -20,9 +20,9 @@ export function AudienceTuner() {
   const setTone = useAppStore((s) => s.setTone);
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-1.5 min-w-0">
       <Users className="h-3 w-3 text-muted-foreground shrink-0" />
-      <div className="flex items-center gap-0.5 rounded-lg border bg-muted/30 p-0.5">
+      <div className="flex items-center gap-0.5 rounded-lg border bg-muted/30 p-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {TONE_OPTIONS.map((opt) => (
           <button
             key={opt.value}

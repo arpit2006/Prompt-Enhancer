@@ -350,10 +350,12 @@ export function ProfileClient({ user }: Props) {
 
         {/* ── Tools section ─────────────────────────────────────────────── */}
         <div className="rounded-xl border bg-card overflow-hidden">
-          <div className="flex items-center gap-3 px-5 py-3 border-b">
-            <Wrench className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold">Tools</h2>
-            <div className="flex items-center gap-1 ml-2">
+          <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3 border-b">
+            <div className="flex items-center gap-2 shrink-0">
+              <Wrench className="h-4 w-4 text-primary" />
+              <h2 className="text-sm font-semibold">Tools</h2>
+            </div>
+            <div className="flex items-center gap-1 ml-auto overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {([
                 { id: "compare" as const, label: "Diff", icon: GitCompare },
                 { id: "test" as const, label: "Test Prompt", icon: FlaskConical },
@@ -363,7 +365,7 @@ export function ProfileClient({ user }: Props) {
                   key={id}
                   onClick={() => setToolTab(id)}
                   className={cn(
-                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
+                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all whitespace-nowrap shrink-0",
                     toolTab === id
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
