@@ -8,8 +8,9 @@ import {
   Info,
   Loader2,
   BarChart2,
+  Target,
+  ListChecks,
 } from "lucide-react";
-import type { AnalysisIssue } from "@/types";
 
 function ScoreBar({
   label,
@@ -47,6 +48,55 @@ function ScoreBar({
   );
 }
 
+function TenPointPill({ score }: { score: number }) {
+  const tone =
+    score >= 8
+      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+      : score >= 5
+      ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+      : "bg-red-500/10 text-red-600 dark:text-red-400";
+
+  return (
+    <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums", tone)}>
+      {score}/10
+    </span>
+  );
+}
+
+function SectionList({
+  title,
+  items,
+  icon: Icon,
+  emptyLabel,
+}: {
+  title: string;
+  items: string[];
+  icon: typeof Target;
+  emptyLabel: string;
+}) {
+  return (
+    <div className="space-y-2 rounded-xl border bg-card p-4 shadow-sm">
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-primary" />
+        <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+          {title}
+        </h3>
+      </div>
+      {items.length === 0 ? (
+        <p className="text-xs text-muted-foreground">{emptyLabel}</p>
+      ) : (
+        <div className="space-y-2">
+          {items.map((item, index) => (
+            <div key={`${title}-${index}`} className="rounded-lg bg-muted/40 px-3 py-2 text-xs leading-relaxed">
+              {item}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const SEVERITY_CONFIG: Record<
   string,
   { icon: typeof Info; className: string; label: string }
@@ -66,27 +116,6 @@ const SEVERITY_CONFIG: Record<
     className: "text-blue-600 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
     label: "Low",
   },
-  // Aliases / fallbacks for unexpected AI responses
-  warning: {
-    icon: AlertTriangle,
-    className: "text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800",
-    label: "Warning",
-  },
-  error: {
-    icon: AlertTriangle,
-    className: "text-red-500 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800",
-    label: "Error",
-  },
-  info: {
-    icon: Info,
-    className: "text-blue-600 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
-    label: "Info",
-  },
-  suggestion: {
-    icon: Info,
-    className: "text-blue-600 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
-    label: "Suggestion",
-  },
 };
 
 const DEFAULT_SEVERITY_CONFIG = {
@@ -96,12 +125,12 @@ const DEFAULT_SEVERITY_CONFIG = {
 };
 
 const PROMPT_TYPE_LABELS: Record<string, string> = {
-  instruction: "📋 Instruction",
-  question: "❓ Question",
-  creative: "🎨 Creative",
-  code: "💻 Code Generation",
-  image: "🖼️ Image Generation",
-  conversational: "💬 Conversational",
+  instruction: "Instruction",
+  question: "Question",
+  creative: "Creative",
+  code: "Code Generation",
+  image: "Image Generation",
+  conversational: "Conversational",
 };
 
 const LENGTH_LABELS: Record<string, { label: string; className: string }> = {
@@ -123,7 +152,7 @@ export function AnalysisPanel() {
         </div>
         <div className="text-center">
           <p className="text-sm font-medium text-foreground">Analyzing…</p>
-          <p className="text-xs text-muted-foreground mt-1">Scoring your prompt quality</p>
+          <p className="text-xs text-muted-foreground mt-1">Scoring your prompt against the full rubric</p>
         </div>
       </div>
     );
@@ -147,20 +176,24 @@ export function AnalysisPanel() {
     );
   }
 
-  const lengthInfo = LENGTH_LABELS[analysis.lengthAssessment];
+  const lengthInfo = LENGTH_LABELS[analysis.lengthAssessment] ?? LENGTH_LABELS.optimal;
 
   return (
     <div className="flex flex-col gap-5 p-4 overflow-y-auto flex-1 min-h-0">
-      {/* Scores */}
       <div className="space-y-3 rounded-xl border bg-card p-4 shadow-sm">
-        <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-          Quality Scores
-        </h3>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+            Prompt Quality Analysis
+          </h3>
+          <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+            {analysis.overallScore}/100
+          </div>
+        </div>
+        <ScoreBar label="Overall Quality" value={analysis.overallScore} />
         <ScoreBar label="Clarity" value={analysis.clarityScore} />
         <ScoreBar label="Completeness" value={analysis.completenessScore} />
       </div>
 
-      {/* Metadata */}
       <div className="grid grid-cols-2 gap-2">
         <div className="rounded-xl border bg-card p-3 space-y-0.5 shadow-sm">
           <p className="text-[10px] uppercase tracking-wide font-semibold text-muted-foreground">Type</p>
@@ -180,13 +213,50 @@ export function AnalysisPanel() {
         </div>
         <div className="rounded-xl border bg-card p-3 space-y-0.5 shadow-sm">
           <p className="text-[10px] uppercase tracking-wide font-semibold text-muted-foreground">Tokens</p>
-          <p className="text-xs font-semibold tabular-nums">
-            ~{analysis.estimatedTokens.toLocaleString()}
-          </p>
+          <p className="text-xs font-semibold tabular-nums">~{analysis.estimatedTokens.toLocaleString()}</p>
         </div>
       </div>
 
-      {/* Issues */}
+      <div className="space-y-3 rounded-xl border bg-card p-4 shadow-sm">
+        <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Scores
+        </h3>
+        <div className="space-y-2">
+          {analysis.categoryScores.map((category) => (
+            <div key={category.id} className="rounded-lg border bg-muted/20 px-3 py-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs font-medium">{category.label}</p>
+                <TenPointPill score={category.score} />
+              </div>
+              {category.rationale && (
+                <p className="mt-1 text-[11px] text-muted-foreground leading-relaxed">{category.rationale}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <SectionList
+        title="Strengths"
+        items={analysis.strengths}
+        icon={CheckCircle}
+        emptyLabel="No specific strengths were identified."
+      />
+
+      <SectionList
+        title="Weaknesses"
+        items={analysis.weaknesses}
+        icon={AlertTriangle}
+        emptyLabel="No major weaknesses were identified."
+      />
+
+      <SectionList
+        title="Suggested Improvements"
+        items={analysis.suggestedImprovements}
+        icon={ListChecks}
+        emptyLabel="No additional improvements were suggested."
+      />
+
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
@@ -205,7 +275,7 @@ export function AnalysisPanel() {
               <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
             </div>
             <p className="text-xs text-emerald-700 dark:text-emerald-300 font-medium">
-              No issues detected — your prompt looks solid!
+              No issues detected — your prompt looks solid.
             </p>
           </div>
         ) : (

@@ -49,7 +49,7 @@ interface SlotResult {
 const EMPTY_SLOT: SlotResult = { result: null, error: null, loading: false };
 
 function avgScore(r: EnhanceResponse): number {
-  return (r.analysis.clarityScore + r.analysis.completenessScore) / 2;
+  return r.analysis.overallScore;
 }
 
 // ─── Score pill ───────────────────────────────────────────────────────────────
@@ -299,8 +299,8 @@ export function ComparePanel() {
               </div>
               {slot.result && (
                 <div className="flex gap-1">
+                  <ScorePill label="Overall" score={slot.result.analysis.overallScore} />
                   <ScorePill label="Clarity" score={slot.result.analysis.clarityScore} />
-                  <ScorePill label="Complete" score={slot.result.analysis.completenessScore} />
                 </div>
               )}
             </div>

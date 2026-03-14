@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { enhancePromptOpenAI } from "@/lib/openai";
 import { enforceContentLength, sanitiseInput, sanitiseClientError } from "@/lib/security";
 import { checkFreeUsage, platformKeyExists } from "@/lib/usage-limit";
+import type { EnhanceRequest } from "@/types";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -11,12 +12,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = (await req.json()) as {
-      prompt: string;
-      modelId?: string;
-      targetModelId?: string;
-    };
-    const { modelId, targetModelId } = body;
+    const body = (await req.json()) as EnhanceRequest;
+    const { modelId } = body;
     let { prompt } = body;
 
     if (!prompt?.trim()) {
@@ -49,7 +46,7 @@ export async function POST(req: NextRequest) {
 
     const openaiModel = modelId ?? "gpt-4o";
 
-    const result = await enhancePromptOpenAI(prompt, callerKey, openaiModel, targetModelId);
+    const result = await enhancePromptOpenAI({ ...body, prompt }, callerKey, openaiModel);
     return NextResponse.json(result);
   } catch (err: unknown) {
     console.error("[/api/enhance-openai]", err);

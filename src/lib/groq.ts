@@ -8,6 +8,14 @@
  */
 
 import type { EnhanceRequest, EnhanceResponse, PromptAnalysis } from "@/types";
+import {
+  buildAnalyzeUserMessage,
+  buildEnhanceUserMessage,
+  normalizeEnhanceResponse,
+  normalizePromptAnalysis,
+  SHARED_ANALYZE_SYSTEM_PROMPT,
+  SHARED_ENHANCE_SYSTEM_PROMPT,
+} from "@/lib/prompt-enhancement";
 
 const GROQ_BASE = "https://api.groq.com/openai/v1";
 export const GROQ_MODEL = "llama-3.3-70b-versatile";
@@ -74,62 +82,6 @@ async function chatComplete(
 
 // ─── Prompts (same schema as Gemini lib) ─────────────────────────────────────
 
-const ENHANCE_SYSTEM = `You are a world-class prompt engineer specializing in crafting highly detailed, comprehensive, and optimized prompts for large language models, image generation models, and code generation models.
-
-Your task is to take a user's rough or short prompt and transform it into a rich, fully-specified, production-grade prompt.
-
-## CRITICAL RULES FOR THE "content" FIELD:
-- The enhanced prompt MUST be significantly longer and more detailed than the original — aim for at LEAST 3-5x the original length, minimum 80-150 words per suggestion
-- Do NOT just rephrase — you MUST add: role/persona setup, specific context, clear task definition, expected output format, tone and style guidance, constraints, examples if helpful, and any edge cases to handle
-- A great prompt leaves NO ambiguity. The AI receiving it should know exactly what to do, how to respond, and in what format
-- Always start the enhanced prompt with a clear role assignment (e.g. "You are an expert...", "Act as a senior...")
-- Include explicit output format instructions (e.g. "Respond in structured markdown with headings", "Provide a numbered list of...", "Return a JSON object with...")
-- Specify audience, depth level, tone, and length of the expected response
-
-Respond with valid JSON matching this EXACT schema (no markdown, no prose):
-{
-  "analysis": {
-    "clarityScore": <0-100 integer>,
-    "completenessScore": <0-100 integer>,
-    "lengthAssessment": <"too-short" | "optimal" | "too-long">,
-    "promptType": <"instruction" | "question" | "creative" | "code" | "image" | "conversational">,
-    "wordCount": <integer>,
-    "estimatedTokens": <integer>,
-    "issues": [
-      {
-        "type": <"ambiguity" | "missing-context" | "vague-language" | "no-format-spec" | "no-tone-spec">,
-        "severity": <"low" | "medium" | "high">,
-        "message": "<brief description>",
-        "suggestion": "<concrete fix>"
-      }
-    ]
-  },
-  "suggestions": [
-    {
-      "id": "<unique string>",
-      "type": <"full-rewrite" | "addition" | "replacement" | "structural">,
-      "title": "<short title>",
-      "description": "<one sentence explaining what changed and why>",
-      "content": "<THE COMPLETE, FULLY-EXPANDED, DETAILED IMPROVED PROMPT — minimum 80 words, rich with context, format specs, role, constraints, and examples>",
-      "rationale": "<why this version performs better>"
-    }
-  ]
-}
-
-Generate 3 suggestions (one full-rewrite, one structural, one addition/replacement).
-Each suggestion's "content" must be a dramatically expanded, production-ready prompt — never a short rephrasing.`;
-
-const ANALYZE_SYSTEM = `You are an expert prompt analyzer. Analyze the given prompt and return ONLY a JSON object — no markdown, no prose:
-{
-  "clarityScore": <0-100>,
-  "completenessScore": <0-100>,
-  "lengthAssessment": <"too-short" | "optimal" | "too-long">,
-  "promptType": <"instruction" | "question" | "creative" | "code" | "image" | "conversational">,
-  "wordCount": <integer>,
-  "estimatedTokens": <integer>,
-  "issues": [{ "type": string, "severity": string, "message": string, "suggestion": string }]
-}`;
-
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 export async function enhancePromptGroq(
@@ -138,19 +90,12 @@ export async function enhancePromptGroq(
 ): Promise<EnhanceResponse> {
   const key = resolveApiKey(callerApiKey);
 
-  const userMessage = `Target AI Model: ${req.targetModelId ?? req.modelId ?? ""}
-${req.context ? `Additional context: ${req.context}\n` : ""}
-Prompt to enhance:
-"""
-${req.prompt}
-"""
-
-Analyze and improve this prompt. Return JSON only.`;
+  const userMessage = buildEnhanceUserMessage(req);
 
   const raw = await chatComplete(
     key,
     [
-      { role: "system", content: ENHANCE_SYSTEM },
+      { role: "system", content: SHARED_ENHANCE_SYSTEM_PROMPT },
       { role: "user", content: userMessage },
     ],
     0.5,
@@ -158,7 +103,7 @@ Analyze and improve this prompt. Return JSON only.`;
   );
 
   try {
-    return JSON.parse(extractJSON(raw)) as EnhanceResponse;
+    return normalizeEnhanceResponse(JSON.parse(extractJSON(raw)), req.prompt);
   } catch {
     throw new Error(`Groq returned invalid JSON: ${raw.slice(0, 200)}`);
   }
@@ -174,10 +119,10 @@ export async function analyzePromptGroq(
   const raw = await chatComplete(
     key,
     [
-      { role: "system", content: ANALYZE_SYSTEM },
+      { role: "system", content: SHARED_ANALYZE_SYSTEM_PROMPT },
       {
         role: "user",
-        content: `Target model: ${modelId}\n\nPrompt:\n"""\n${prompt}\n"""\n\nReturn JSON only.`,
+        content: buildAnalyzeUserMessage(prompt, modelId),
       },
     ],
     0.1,
@@ -185,7 +130,7 @@ export async function analyzePromptGroq(
   );
 
   try {
-    return JSON.parse(extractJSON(raw)) as PromptAnalysis;
+    return normalizePromptAnalysis(JSON.parse(extractJSON(raw)), prompt);
   } catch {
     throw new Error(`Groq returned invalid JSON: ${raw.slice(0, 200)}`);
   }

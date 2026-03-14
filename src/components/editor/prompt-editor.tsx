@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, Save, Trash2, Loader2, Zap, BrainCircuit, ShieldAlert, X } from "lucide-react";
+import { Sparkles, Save, Trash2, Loader2, Zap, BrainCircuit, ShieldAlert, X, CheckCircle2 } from "lucide-react";
 import { useAppStore } from "@/store/prompt-store";
 import { estimateTokens, debounce } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,9 @@ const MAX_TOKENS = 8192;
 
 export function PromptEditor() {
   const [piiDismissed, setPiiDismissed] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [justEnhanced, setJustEnhanced] = useState(false);
+  const [successInfo, setSuccessInfo] = useState<{ count: number; score: number | null } | null>(null);
   const {
     currentPrompt,
     isEnhancing,
@@ -41,7 +44,6 @@ export function PromptEditor() {
     setLastOriginalPrompt,
     trackEnhancement,
     addTag,
-    activeEntryId,
   } = useAppStore();
 
   // PII detection — re-run whenever prompt changes, reset dismissed flag on new PII types
@@ -140,6 +142,7 @@ export function PromptEditor() {
         headers: { "Content-Type": "application/json", ...modeHeaders },
         body: JSON.stringify({
           prompt: currentPrompt,
+          tone: tone !== "Default" ? tone : undefined,
           targetModelId: requestTargetModelId,
           context: contextParts.length > 0 ? contextParts.join("\n") : undefined,
         }),
@@ -156,6 +159,12 @@ export function PromptEditor() {
       }
       setSuggestions(data.suggestions);
       if (data.analysis) setAnalysis(data.analysis);
+      // Show success toast + button flash
+      setSuccessInfo({ count: data.suggestions.length, score: data.analysis?.overallScore ?? null });
+      setShowSuccess(true);
+      setJustEnhanced(true);
+      setTimeout(() => setShowSuccess(false), 3500);
+      setTimeout(() => setJustEnhanced(false), 1800);
       // Auto-save the original prompt to history (skip in privacy mode)
       let savedEntryId: string | null = null;
       if (!privacyMode) savedEntryId = saveVersion(currentPrompt, targetModelId || aiMode, data.analysis);
@@ -276,12 +285,22 @@ export function PromptEditor() {
           <button
             onClick={handleEnhance}
             disabled={isEnhancing || !currentPrompt.trim()}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50 transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+            className={cn(
+              "flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50 transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] hover:opacity-90",
+              justEnhanced
+                ? "bg-gradient-to-r from-emerald-500 to-teal-500 animate-sparkle-pop"
+                : "bg-gradient-to-r from-violet-600 to-indigo-500"
+            )}
           >
             {isEnhancing ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Enhancing…
+              </>
+            ) : justEnhanced ? (
+              <>
+                <CheckCircle2 className="h-4 w-4" />
+                Enhanced!
               </>
             ) : (
               <>
@@ -345,6 +364,39 @@ export function PromptEditor() {
           className="w-full min-h-[520px] h-full resize-none bg-transparent text-base leading-[1.8] placeholder:text-muted-foreground/35 focus:outline-none px-8 py-6 font-mono tracking-wide"
           spellCheck={false}
         />
+      </div>
+
+      {/* Success toast notification */}
+      <div
+        className={cn(
+          "fixed bottom-6 right-6 z-50 flex items-start gap-3 rounded-xl border px-4 py-3 shadow-2xl backdrop-blur-sm transition-[opacity,transform] duration-300",
+          "border-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/90",
+          showSuccess
+            ? "opacity-100 translate-y-0 animate-toast-in"
+            : "opacity-0 translate-y-3 pointer-events-none"
+        )}
+        role="status"
+        aria-live="polite"
+      >
+        <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-100">✦ Prompt enhanced!</p>
+          <p className="mt-0.5 text-xs text-emerald-700 dark:text-emerald-400">
+            {successInfo?.count ?? 3} suggestion{(successInfo?.count ?? 3) !== 1 ? "s" : ""} ready
+            {successInfo?.score != null && (
+              <span className="ml-2 font-medium">· Score: {successInfo.score}/100</span>
+            )}
+          </p>
+        </div>
+        <button
+          onClick={() => setShowSuccess(false)}
+          className="shrink-0 rounded p-0.5 text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+          aria-label="Dismiss"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
       </div>
 
       {/* Token progress bar */}

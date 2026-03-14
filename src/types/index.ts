@@ -12,11 +12,36 @@ export interface AIModel {
   supportsSystem: boolean;
 }
 
+export type AnalysisCategoryId =
+  | "role-clarity"
+  | "objective-clarity"
+  | "context-completeness"
+  | "task-breakdown"
+  | "technical-constraints"
+  | "design-requirements"
+  | "accessibility-considerations"
+  | "seo-considerations"
+  | "performance-constraints"
+  | "output-format-clarity"
+  | "reusability-template-support";
+
+export interface AnalysisCategoryScore {
+  id: AnalysisCategoryId;
+  label: string;
+  score: number; // 0–10
+  rationale?: string;
+}
+
 export interface PromptAnalysis {
   clarityScore: number;       // 0–100
   completenessScore: number;  // 0–100
+  overallScore: number;       // 0–100
   lengthAssessment: "too-short" | "optimal" | "too-long";
   promptType: "instruction" | "question" | "creative" | "code" | "image" | "conversational";
+  categoryScores: AnalysisCategoryScore[];
+  strengths: string[];
+  weaknesses: string[];
+  suggestedImprovements: string[];
   issues: AnalysisIssue[];
   wordCount: number;
   estimatedTokens: number;
