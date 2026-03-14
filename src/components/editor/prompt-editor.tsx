@@ -224,11 +224,22 @@ export function PromptEditor() {
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="flex flex-col px-4 pt-2.5 pb-0 border-b gap-2 bg-background/80 backdrop-blur sticky top-0 z-10">
+      <div className="flex flex-col px-4 pt-2.5 pb-0 border-b gap-2 bg-background/95 backdrop-blur-md sticky top-0 z-10">
         <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
           {/* Model badge — shows active enhancement mode */}
-          <div className="flex items-center gap-1.5 rounded-md border bg-muted/50 px-2.5 py-1">
+          <div className={cn(
+            "flex items-center gap-1.5 rounded-md border px-2.5 py-1 transition-colors",
+            aiMode === "local"
+              ? "border-violet-300/60 dark:border-violet-700/60 bg-violet-50/50 dark:bg-violet-950/30"
+              : aiMode === "groq"
+              ? "border-orange-300/60 dark:border-orange-700/60 bg-orange-50/50 dark:bg-orange-950/30"
+              : aiMode === "openai"
+              ? "border-emerald-300/60 dark:border-emerald-700/60 bg-emerald-50/50 dark:bg-emerald-950/30"
+              : aiMode === "mistral"
+              ? "border-[#ff7000]/30 bg-orange-50/50 dark:bg-[#ff7000]/5"
+              : "border-indigo-300/60 dark:border-indigo-700/60 bg-indigo-50/50 dark:bg-indigo-950/30"
+          )}>
             {aiMode === "local" ? (
               <>
                 <span className="text-[10px] font-bold tracking-wide text-violet-600 dark:text-violet-400">●</span>
@@ -355,7 +366,9 @@ export function PromptEditor() {
       )}
 
       {/* Editor Area */}
-      <div className="flex-1 overflow-y-auto group">
+      <div className="flex-1 overflow-y-auto group relative">
+        {/* Subtle top fade for depth */}
+        <div className="pointer-events-none absolute top-0 inset-x-0 h-6 bg-gradient-to-b from-background/40 to-transparent z-[1]" />
         <textarea
           ref={textareaRef}
           value={currentPrompt}
@@ -411,7 +424,7 @@ export function PromptEditor() {
       </div>
 
       {/* Bottom status bar */}
-      <div className="flex items-center justify-between px-6 py-2.5 border-t text-[11px] text-muted-foreground bg-muted/20">
+      <div className="flex items-center justify-between px-6 py-2.5 border-t text-[11px] text-muted-foreground bg-background/80 backdrop-blur-sm">
         <div className="flex items-center gap-4">
           <span><span className="text-foreground font-semibold">{currentPrompt.split(/\s+/).filter(Boolean).length}</span> words</span>
           <span><span className="text-foreground font-semibold">{currentPrompt.length}</span> chars</span>

@@ -99,7 +99,7 @@ export function ProfileClient({ user }: Props) {
       const { clearAllData } = await import("@/store/prompt-store").then(m => ({ clearAllData: m.useAppStore.getState().clearAllData }));
       clearAllData();
       const { signOut } = await import("next-auth/react");
-      await signOut({ callbackUrl: "/" });
+      await signOut({ callbackUrl: "/login" });
     });
   };
 

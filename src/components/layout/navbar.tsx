@@ -66,7 +66,9 @@ export function Navbar() {
             <MistralKeyModal open={mistralModalOpen} onClose={() => setMistralModalOpen(false)} />
             <NewsletterModal open={newsletterOpen} onClose={() => setNewsletterOpen(false)} />
 
-            <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 relative">
+                {/* Gradient accent line */}
+                <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-500 opacity-70" />
 
                 {/* ── Primary row ──────────────────────────────────────── */}
                 <div className="flex h-14 items-center px-4 gap-3">
@@ -78,7 +80,7 @@ export function Navbar() {
                         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-500 shadow-sm">
                             <Sparkles className="h-4 w-4 text-white" />
                         </div>
-                        <span className="hidden sm:inline">PromptCraft</span>
+                        <span className="hidden sm:inline bg-gradient-to-r from-violet-600 to-indigo-500 bg-clip-text text-transparent font-bold">PromptCraft</span>
                     </button>
 
                     <div className="flex-1" />
@@ -87,27 +89,27 @@ export function Navbar() {
                     <div className="hidden md:flex items-center gap-2">
                         <div className="flex items-center rounded-lg border bg-muted/40 p-0.5 gap-0.5">
                             <button onClick={() => { setAiMode("gemini"); if (!geminiApiKey) setKeyModalOpen(true); }} title="Gemini — Google AI Studio"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "gemini" ? "bg-background shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "gemini" ? "bg-background shadow-sm text-primary ring-1 ring-primary/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <Cloud className="h-3.5 w-3.5" /><span>Gemini</span>
                                 {geminiApiKey && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />}
                             </button>
                             <button onClick={() => { setAiMode("groq"); if (!groqApiKey) setGroqModalOpen(true); }} title="Groq — fast free LLaMA inference"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "groq" ? "bg-background shadow-sm text-orange-600 dark:text-orange-400" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "groq" ? "bg-background shadow-sm text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <Zap className="h-3.5 w-3.5" /><span>Groq</span>
                                 {groqApiKey && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />}
                             </button>
                             <button onClick={() => { setAiMode("openai"); if (!openaiApiKey) setOpenaiModalOpen(true); }} title="OpenAI — GPT-4o, GPT-4"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "openai" ? "bg-background shadow-sm text-emerald-600 dark:text-emerald-400" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "openai" ? "bg-background shadow-sm text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <BrainCircuit className="h-3.5 w-3.5" /><span>OpenAI</span>
                                 {openaiApiKey && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />}
                             </button>
                             <button onClick={() => setAiMode("mistral")} title="Mistral — free tier available"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "mistral" ? "bg-background shadow-sm text-[#ff7000]" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "mistral" ? "bg-background shadow-sm text-[#ff7000] ring-1 ring-[#ff7000]/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <Wind className="h-3.5 w-3.5" /><span>Mistral</span>
                                 {mistralApiKey && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />}
                             </button>
                             <button onClick={() => { setAiMode("local"); setOllamaModalOpen(true); }} title="Local — runs via Ollama on your machine"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "local" ? "bg-background shadow-sm text-violet-600 dark:text-violet-400" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "local" ? "bg-background shadow-sm text-violet-600 dark:text-violet-400 ring-1 ring-violet-500/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <Cpu className="h-3.5 w-3.5" /><span>Local</span>
                             </button>
                         </div>
@@ -213,27 +215,27 @@ export function Navbar() {
                         {/* Mode toggle pill */}
                         <div className="flex items-center rounded-lg border bg-muted/40 p-0.5 gap-0.5">
                             <button onClick={() => { setAiMode("gemini"); if (!geminiApiKey) setKeyModalOpen(true); }} title="Gemini"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "gemini" ? "bg-background shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "gemini" ? "bg-background shadow-sm text-primary ring-1 ring-primary/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <Cloud className="h-3.5 w-3.5" /><span>Gemini</span>
                                 {geminiApiKey && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />}
                             </button>
                             <button onClick={() => { setAiMode("groq"); if (!groqApiKey) setGroqModalOpen(true); }} title="Groq"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "groq" ? "bg-background shadow-sm text-orange-600 dark:text-orange-400" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "groq" ? "bg-background shadow-sm text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <Zap className="h-3.5 w-3.5" /><span>Groq</span>
                                 {groqApiKey && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />}
                             </button>
                             <button onClick={() => { setAiMode("openai"); if (!openaiApiKey) setOpenaiModalOpen(true); }} title="OpenAI"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "openai" ? "bg-background shadow-sm text-emerald-600 dark:text-emerald-400" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "openai" ? "bg-background shadow-sm text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <BrainCircuit className="h-3.5 w-3.5" /><span>OpenAI</span>
                                 {openaiApiKey && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />}
                             </button>
                             <button onClick={() => setAiMode("mistral")} title="Mistral"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "mistral" ? "bg-background shadow-sm text-[#ff7000]" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "mistral" ? "bg-background shadow-sm text-[#ff7000] ring-1 ring-[#ff7000]/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <Wind className="h-3.5 w-3.5" /><span>Mistral</span>
                                 {mistralApiKey && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />}
                             </button>
                             <button onClick={() => { setAiMode("local"); setOllamaModalOpen(true); }} title="Local / Ollama"
-                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "local" ? "bg-background shadow-sm text-violet-600 dark:text-violet-400" : "text-muted-foreground hover:text-foreground"}`}>
+                                className={`relative flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all ${aiMode === "local" ? "bg-background shadow-sm text-violet-600 dark:text-violet-400 ring-1 ring-violet-500/25" : "text-muted-foreground hover:text-foreground"}`}>
                                 <Cpu className="h-3.5 w-3.5" /><span>Local</span>
                             </button>
                         </div>

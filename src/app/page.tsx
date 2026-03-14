@@ -17,7 +17,6 @@ import {
   Users,
   FlaskConical,
   FolderOpen,
-  Star,
 } from "lucide-react";
 
 export const metadata = {
@@ -132,27 +131,6 @@ const FEATURES = [
   },
 ];
 
-const TESTIMONIALS = [
-  {
-    quote: "PromptCraft turned my vague 'explain this code' into a detailed, perfectly structured prompt. My LLM answers got 3× more useful overnight.",
-    name: "Rohan M.",
-    role: "Full-stack developer",
-    stars: 5,
-  },
-  {
-    quote: "The clarity score alone is worth it. I can now tell exactly why my prompt was getting garbage output before I even hit enhance.",
-    name: "Sarah K.",
-    role: "AI researcher",
-    stars: 5,
-  },
-  {
-    quote: "Switching between Groq (fast) and GPT-4 (precise) with one click is a game changer. I use this every single day.",
-    name: "Alex T.",
-    role: "Content strategist",
-    stars: 5,
-  },
-];
-
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default async function LandingPage() {
   const session = await auth();
@@ -177,7 +155,6 @@ export default async function LandingPage() {
           <div className="hidden md:flex items-center gap-0.5 text-xs">
             <a href="#features" className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">Features</a>
             <a href="#how" className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">How it works</a>
-            <a href="#testimonials" className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">Reviews</a>
           </div>
 
           <div className="flex items-center gap-2">
@@ -487,45 +464,6 @@ export default async function LandingPage() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Testimonials ──────────────────────────────────────────────── */}
-      <section id="testimonials" className="relative py-24 overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-violet-500/4 to-transparent" />
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/50 px-4 py-1.5 text-xs font-semibold text-muted-foreground mb-5">
-              <Star className="h-3.5 w-3.5 fill-current text-amber-500" />
-              What people are saying
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight">Loved by prompt engineers</h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {TESTIMONIALS.map(({ quote, name, role, stars }) => (
-              <div key={name} className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 hover:border-fuchsia-500/30 hover:-translate-y-1 transition-all duration-300 hover:shadow-xl hover:shadow-fuchsia-500/5">
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-fuchsia-500/4 to-violet-500/4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative">
-                  <div className="flex gap-0.5 mb-4">
-                    {Array.from({ length: stars }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-5 italic">&ldquo;{quote}&rdquo;</p>
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-fuchsia-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                      {name[0]}
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold">{name}</div>
-                      <div className="text-[11px] text-muted-foreground">{role}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>

@@ -29,7 +29,7 @@ export function RightPanel() {
     return (
         <div className="flex flex-col h-full overflow-hidden">
             {/* Tab bar */}
-            <div className="flex gap-0.5 border-b bg-muted/20 px-2 pt-2 pb-0 shrink-0">
+            <div className="flex border-b bg-background/80 backdrop-blur px-2 pt-1 pb-0 shrink-0">
                 {TABS.map(({ id, label, icon: Icon }) => {
                     const isActive = rightPanel === id;
 
@@ -45,14 +45,14 @@ export function RightPanel() {
                             key={id}
                             onClick={() => setRightPanel(id)}
                             className={cn(
-                                "relative flex flex-1 flex-col items-center gap-0.5 px-1 pb-2 pt-1.5 text-[10px] font-medium transition-all rounded-t-md",
+                                "relative flex flex-1 flex-col items-center gap-0.5 px-1 pb-3 pt-2 text-[10px] font-medium transition-all duration-200",
                                 isActive
-                                    ? "text-primary bg-background shadow-sm border border-b-background border-border -mb-px z-10"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-background/60"
+                                    ? "text-primary"
+                                    : "text-muted-foreground hover:text-foreground"
                             )}
                         >
                             <div className="relative">
-                                <Icon className="h-3.5 w-3.5" />
+                                <Icon className={cn("h-3.5 w-3.5 transition-transform duration-200", isActive && "scale-110")} />
                                 {badge !== null && (
                                     <span className="absolute -top-1.5 -right-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-primary-foreground ring-1 ring-background">
                                         {badge > 9 ? '9+' : badge}
@@ -60,6 +60,9 @@ export function RightPanel() {
                                 )}
                             </div>
                             <span className="hidden sm:inline tracking-wide">{label}</span>
+                            {isActive && (
+                                <span className="absolute bottom-0 left-2 right-2 h-[2px] rounded-full bg-gradient-to-r from-violet-500 to-indigo-500" />
+                            )}
                         </button>
                     );
                 })}
