@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-<strong>Analyze • Improve • Optimize your AI prompts</strong>
+<strong>Analyze • Improve • Optimize your AI prompt</strong>
 </p>
 
 <p align="center">
