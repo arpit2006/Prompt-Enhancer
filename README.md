@@ -1,4 +1,4 @@
-# 🚀 PromptCraft
+# PromptCraft
 
 <p align="center">
   <img width="500" alt="PromptCraft Logo" src="https://github.com/user-attachments/assets/40a7b571-f94a-4bd6-84a3-b66611c09c59" />
