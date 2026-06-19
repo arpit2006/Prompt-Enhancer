@@ -36,7 +36,7 @@ Supports <b>Gemini</b> • <b>Groq</b> • <b>OpenAI</b> • <b>Ollama</b>
 
 ---
 
-# ✨ Features
+# Features
 
 ### 🧠 Prompt Intelligence
 
