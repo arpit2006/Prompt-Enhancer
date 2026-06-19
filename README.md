@@ -76,7 +76,7 @@ Supports <b>Gemini</b> • <b>Groq</b> • <b>OpenAI</b> • <b>Ollama</b>
 
 ---
 
-# 🧱 Tech Stack
+# Tech Stack
 
 | Layer     | Technology                               |
 | --------- | ---------------------------------------- |
