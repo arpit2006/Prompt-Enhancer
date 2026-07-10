@@ -38,7 +38,7 @@ Supports <b>Gemini</b> • <b>Groq</b> • <b>OpenAI</b> • <b>Ollama</b>
 
 # Features
 
-### 🧠 Prompt Intelligence
+### Prompt Intelligence
 
 * **Prompt Enhancement** — Analyze and rewrite prompts with clarity + completeness scoring
 * **Audience Tuning** — Adjust tone: Technical, Simple, Executive, Creative, Child
