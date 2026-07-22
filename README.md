@@ -28,7 +28,7 @@ Supports <b>Gemini</b> • <b>Groq</b> • <b>OpenAI</b> • <b>Ollama</b>
 
 ---
 
-# 🎬 Demo
+# Demo
 
 <p align="center">
 <img src="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif" width="800"/>
